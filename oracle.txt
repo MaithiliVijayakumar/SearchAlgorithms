@@ -1,0 +1,16 @@
+#include <stdio.h>
+
+int main() {
+    int path[] = {0, 1, 4, 6};
+    int pathLength = sizeof(path) / sizeof(path[0]);
+
+    printf("Oracle Algorithm Output:\n");
+    printf("Path: ");
+    for (int i = 0; i < pathLength; i++) {
+        printf("%d", path[i]);
+        if (i < pathLength - 1) printf(" -> ");
+    }
+    printf("\nGoal %d reached without search!\n", path[pathLength - 1]);
+
+    return 0;
+}

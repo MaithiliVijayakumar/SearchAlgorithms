@@ -1,0 +1,83 @@
+#include <stdio.h>
+
+#define MAX_NODES 10
+
+int visited[MAX_NODES];
+int queue[MAX_NODES];
+int front, rear;
+
+void initVisited(int n) {
+    for (int i = 0; i < n; i++) visited[i] = 0;
+}
+
+void resetQueue() {
+    front = rear = -1;
+}
+
+void enqueue(int v) {
+    if (rear == MAX_NODES - 1) return;
+    if (front == -1) front = 0;
+    queue[++rear] = v;
+}
+
+int dequeue() {
+    if (front == -1 || front > rear) return -1;
+    return queue[front++];
+}
+void searchGraph(int graph[MAX_NODES][MAX_NODES], int startNode, int n, int mode) {
+    if (mode == 0) {
+        // DFS (recursive style)
+        visited[startNode] = 1;
+        printf("Visited node %d\n", startNode);
+        for (int neighbor = 0; neighbor < n; neighbor++) {
+            if (graph[startNode][neighbor] && !visited[neighbor]) {
+                searchGraph(graph, neighbor, n, mode);
+            }
+        }
+    } else {
+        resetQueue();
+        enqueue(startNode);
+        visited[startNode] = 1;
+
+        while ((startNode = dequeue()) != -1) {
+            printf("Visited node %d\n", startNode);
+            for (int neighbor = 0; neighbor < n; neighbor++) {
+                if (graph[startNode][neighbor] && !visited[neighbor]) {
+                    enqueue(neighbor);
+                    visited[neighbor] = 1;
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    int n = 5;
+    int graph[MAX_NODES][MAX_NODES] = {
+        {0, 1, 1, 0, 0},
+        {1, 0, 0, 1, 1},
+        {1, 0, 0, 0, 0},
+        {0, 1, 0, 0, 1},
+        {0, 1, 0, 1, 0}
+    };
+
+    int choice, startNode;
+
+    printf("Graph Traversal (DFS & BFS in one function)\n");
+    printf("Enter 0 for DFS, 1 for BFS: ");
+    if (scanf("%d", &choice) != 1 || (choice != 0 && choice != 1)) {
+        printf("Invalid choice.\n");
+        return 1;
+    }
+
+    printf("Enter starting node (0-%d): ", n - 1);
+    if (scanf("%d", &startNode) != 1 || startNode < 0 || startNode >= n) {
+        printf("Invalid starting node.\n");
+        return 1;
+    }
+
+    initVisited(n);
+    searchGraph(graph, startNode, n, choice);
+
+    return 0;
+}

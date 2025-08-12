@@ -1,0 +1,67 @@
+#include <stdio.h>
+#define MAX_NODES 10
+int visited[MAX_NODES];
+int queue[MAX_NODES];
+int front = -1, rear = -1;
+
+void enqueue(int value) {
+    if (rear == MAX_NODES - 1) {
+        printf("Queue is full... somehow.\n");
+        return;
+    }
+    if (front == -1) front = 0;
+    queue[++rear] = value;
+}
+
+int dequeue() {
+    if (front == -1 || front > rear) {
+        return -1; 
+    }
+    return queue[front++];
+}
+
+int isQueueEmpty() {
+    return (front == -1 || front > rear);
+}
+
+void bfs(int graph[MAX_NODES][MAX_NODES], int startNode, int n) {
+    enqueue(startNode);
+    visited[startNode] = 1;
+
+    while (!isQueueEmpty()) {
+        int current = dequeue();
+        printf("Visited node %d\n", current);
+        for (int neighbor = 0; neighbor < n; neighbor++) {
+            if (graph[current][neighbor] == 1 && !visited[neighbor]) {
+                enqueue(neighbor);
+                visited[neighbor] = 1;
+            }
+        }
+    }
+}
+
+int main() {
+    int n = 5;
+    int graph[MAX_NODES][MAX_NODES] = {
+        {0, 1, 1, 0, 0},
+        {1, 0, 0, 1, 1},
+        {1, 0, 0, 0, 0},
+        {0, 1, 0, 0, 1},
+        {0, 1, 0, 1, 0}
+    };
+    for (int i = 0; i < MAX_NODES; i++) {
+        visited[i] = 0;
+    }
+
+    int startNode;
+    printf("Enter starting node (0-%d): ", n - 1);
+    if (scanf("%d", &startNode) != 1 || startNode < 0 || startNode >= n) {
+        printf("Invalid starting node.\n");
+        return 1;
+    }
+
+    printf("Starting BFS from node %d...\n", startNode);
+    bfs(graph, startNode, n);
+
+    return 0;
+}
